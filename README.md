@@ -52,6 +52,50 @@ Authorization: Bearer <JWT>
 
 ---
 
+## 🐳 Infraestructura Local: Docker Compose y Base de Datos
+
+El ecosistema utiliza **PostgreSQL** como base de datos relacional para el almacenamiento de usuarios y negocio.
+
+> ⚠️ **Nota importante:** Se ha removido el soporte y la dependencia de **Redis**, por lo que ya no es necesario levantar ningún contenedor de caché ni configurar data sources adicionales para este fin.
+
+Para levantar la base de datos local preconfigurada, sitúate en la raíz del proyecto donde se encuentre el archivo:
+
+```bash
+docker-compose.yml
+```
+
+Luego ejecuta:
+
+```bash
+docker compose up -d
+```
+
+Este comando levantará los contenedores definidos en el archivo `docker-compose.yml` en segundo plano.
+
+### Verificar contenedores activos
+
+Puedes validar que la base de datos se haya levantado correctamente con:
+
+```bash
+docker compose ps
+```
+
+### Detener la infraestructura local
+
+Para apagar los contenedores sin eliminar volúmenes ni datos persistidos:
+
+```bash
+docker compose down
+```
+
+### Consideraciones
+
+- PostgreSQL debe estar activo antes de iniciar los microservicios que dependan de base de datos.
+- Ya no debe configurarse Redis en variables de entorno ni archivos `application.yml`.
+- Si el servicio no conecta a la base de datos, valida primero que el contenedor esté levantado y que el puerto configurado coincida con el datasource del microservicio.
+
+---
+
 ## ⚙️ Configuración del Enrutamiento
 
 El archivo `application.yml` mapea los paths públicos a los IDs lógicos registrados en Eureka.
@@ -210,7 +254,11 @@ Si no aparecen, algo no está registrado correctamente.
 
 ## 📸 Capturas de Referencia
 
-Las siguientes capturas documentan visualmente las políticas principales del Gateway y el proceso para agregar nuevos microservicios.
+Las siguientes capturas documentan visualmente las políticas principales del Gateway, la infraestructura local y el proceso para agregar nuevos microservicios.
+
+### Infraestructura Local: Docker Compose y Base de Datos
+
+![Infraestructura Local Docker Compose y Base de Datos](api_gateway_readme_assets/infraestructura_local_docker_compose.png)
 
 ### Políticas de Seguridad Centralizada y Guía de Arranque Local
 

@@ -1,0 +1,37 @@
+server:
+  port: 8080 # El puerto público definitivo para Postman o Frontend
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      # Habilita la integración directa con el servidor de descubrimiento
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-name: true # Convierte los IDs de Eureka a minúsculas para las rutas
+
+      # DEFINICIÓN EXPLICITA DE RUTAS
+      routes:
+        - id: ms-user-auth-register-routes
+          # lb:// le dice al Gateway: "Busca en Eureka el servicio llamado ms-user-auth-register"
+          uri: lb://MS-USER-AUTH-REGISTER
+          predicates:
+            - Path=/api/v1/**, /oauth2/**, /.well-known/**, /login, /login**
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # URL del microservicio de autenticación que emite los tokens
+          jwk-set-uri: http://localhost:8081/oauth2/jwks
+
+# Configuración para enlazarse a las páginas amarillas de Eureka
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://127.0.0.1:8761/eureka/
+  instance:
+    preferIpAddress: true
